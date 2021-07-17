@@ -1,0 +1,27 @@
+{% extends "menubar.html" %}
+
+{% block content %}
+        <div class="container">
+            <h2>test insert into databse</h2>
+           <form action="{{url_for('insert')}}" method="POST">
+             <div class="form-group">
+                <label for="input_fname">Firstname</label>
+                <input name="input_fname" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="input_lname">Lastname</label>
+                <input name="input_lname" type="text" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="input_age">Age</label>
+                <input name="input_age" type="number" class="form-control"/>
+            </div>
+            <div>
+                <a class="btn btn-success" href="/raw">Back</a>
+                <button type="submit" class="pull-right btn btn-primary">Enter</button>
+            </div>
+        </form> 
+        </div>
+
+{% endblock %}        
+

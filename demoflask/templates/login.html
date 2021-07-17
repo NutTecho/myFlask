@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="eng" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+       
+    </head>
+    <body style="background-color:cadetblue">
+        <section class="vh-100">
+            <div  class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-8 col-lg-6 col-xl-5">
+                        <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-login-form/draw2.png" 
+                        class="img-fluid"
+                          alt="Sample image">
+                      </div>
+                    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                            <div class="card-body p-5 text-center">
+                                    <h1 class="mb-5">
+                                        Sign in
+                                    </h1>  
+                             
+                                  
+                                   <form action="{{url_for('login')}}" method="POST">
+                                     <div class="form-outline md-4">
+                                        <label for="user_data" class="form-label">Email</label>
+                                        <input name="user_data" type="text" placeholder="Enter name" class="form-control form-control-lg"/>
+                                    </div>
+                                    <div class="form-outline md-4">
+                                        <label for="pass_data" class="form-label">Password</label>
+                                        <input name="pass_data" type="text" placeholder="Enter pass" class="form-control form-control-lg"/>
+                                    </div>
+                                    <div class="pt-1 mb-4">
+                                        <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
+                                    </div>
+                                   
+                                </form> 
+                            
+                         
+                            </div>  
+                        </div>  
+                    </div>  
+                </div>
+            </div>  
+        </section>
+
+    </body> 
+</html>
