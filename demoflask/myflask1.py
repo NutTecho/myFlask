@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,url_for,session,flash
+from flask import Flask,render_template,request,redirect,url_for,session,flash,json
 from flask_restful import Api,Resource,abort,reqparse
 from flask_sqlalchemy import SQLAlchemy,Model
 from datetime import timedelta
@@ -83,6 +83,7 @@ def updatetodb(id,fname,lname,age):
     cursor.execute(sql,(fname,lname,age,id))
     conn.commit()
 
+@app.route("/")
 @app.route("/login", methods = ["POST","GET"])
 def login():
     if request.method == "POST":
@@ -129,6 +130,7 @@ def rawdata():
     # data = 5
     # return "hello World"
     db1 = getdb()
+    # print(db1[0])
     # print(db1)
     return render_template('rawdata.html',datas = db1)
 
@@ -168,6 +170,19 @@ def delete(id_data):
     deletetodb(id_data)
     return redirect(url_for('rawdata'))
 
+
+@app.route("/chartdata",methods = ["GET"])
+def chart():
+    legend = 'Monthly Data' 
+    # labels = ["January", "February", "March", "April", "May", "June", "July", "August"]
+    # values = [6, 9, 8, 7, 6, 4, 7, 8]
+
+    labels = [i["fname"]  for i in getdb() ]
+    values = [i["age"]  for i in getdb() ]
+
+    # data = json.dumps( [1.0,2.0,3.0] )
+    # labels=json.dumps( ["12-31-18", "01-01-19", "01-02-19"] )
+    return render_template("chart.html",values=values, labels=labels, legend=legend )
 
 
 if __name__ == "__main__":

@@ -17,7 +17,9 @@
     <body>
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container-fluid">
-                    <a class="navbar-brand active h5" href="#">MyWebApp</a>
+                    <a class="navbar-brand active h5" href="/">
+                        <img src="{{url_for('static',filename='images/idea.png')}}" width="40" height="40">
+                    </a>
                     <button 
                     class="navbar-toggler"
                     type="button"
@@ -34,6 +36,7 @@
                           <a class="nav-link active" aria-current="page" href="/user">Home</a>
                           <a class="nav-link" href="/about">About</a>
                           <a class="nav-link" href="/raw">Rawdata</a>
+                          <a class="nav-link" href="/chartdata">Chartdata</a>
                           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"
                             >Disabled</a
                           >
