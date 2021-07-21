@@ -177,11 +177,11 @@ def chart():
     # labels = ["January", "February", "March", "April", "May", "June", "July", "August"]
     # values = [6, 9, 8, 7, 6, 4, 7, 8]
 
-    labels = [i["fname"]  for i in getdb() ]
-    values = [i["age"]  for i in getdb() ]
-
-    # data = json.dumps( [1.0,2.0,3.0] )
-    # labels=json.dumps( ["12-31-18", "01-01-19", "01-02-19"] )
+    # labels = [i["fname"]  for i in getdb() ]
+    # values = [i["age"]  for i in getdb() ]
+    # print(labels)
+    values = json.dumps( [i["age"]  for i in getdb() ] )
+    labels = json.dumps( [i["fname"]  for i in getdb() ] )
     return render_template("chart.html",values=values, labels=labels, legend=legend )
 
 

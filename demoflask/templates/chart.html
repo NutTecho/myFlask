@@ -1,39 +1,28 @@
 {% extends "menubar.html" %}
 
 {% block content %}
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js"></script>
-    <!-- <script type="text/javascript" src="{{url_for('static',filename='js/chart.js')}}"></script> -->
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     
-    <!-- The chart is then defined as a HTML5 canvas element: -->
+   <h1>Simple Bar Chart</h1>
+   <p id="caption">The chart is displaying a simple line chart.</p>
+    <canvas id="myChart" width="600" height="200" 
+    data-getvalue="{{ values }}"
+    data-getlabel="{{ labels }}"
+    ></canvas>
+    
+
     <h1>Simple Line Chart</h1>
-    <!-- bar chart canvas element -->
-    <canvas id="myChart" width="600" height="200"></canvas>
     <p id="caption">The chart is displaying a simple line chart.</p>
+    <canvas id="myChart1" width="600" height="200" 
+    data-getvalue="{{ values }}"
+    data-getlabel="{{ labels }}"
+    ></canvas>
+   
 
-    <script>
-    let list_data =  {{ values }};
-    let list_label = [{% for item in labels %}
-                    "{{item}}",
-                    {% endfor %}];
-    var ctx = document.getElementById('myChart').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: list_label,
-            datasets: [{ 
-                data: list_data,
-                label: "Total",
-                borderColor: "#3e95cd",
-                backgroundColor: "#7bb6dd",
-                fill: false,
-                }
-  
-    ]
-  },
-});
-</script>
-
+    <script src="{{url_for('static',filename='js/barchart.js')}}"></script>
+    <script src="{{url_for('static',filename='js/linechart.js')}}"></script>
+    
 
 
 {% endblock %}

@@ -1,12 +1,18 @@
 // Global parameters:
 // do not resize the chart canvas when its container does (keep at 600x400px)
+
+// console.log("hello")
+
+var getlabel = JSON.parse(document.getElementById("myChart").dataset.getlabel);
+var getvalue = JSON.parse(document.getElementById("myChart").dataset.getvalue);
+
+console.log(getlabel , getvalue)
+
 Chart.defaults.global.responsive = false;
  
 // define the chart data
 var chartData = {
-labels : [{% for item in labels %}
-    "{{item}}",
-    {% endfor %}],
+labels : getlabel,
 datasets : [{
     // label: '{{ legend }}',
     fill: true,
@@ -26,7 +32,7 @@ datasets : [{
     pointHoverBorderWidth: 2,
     pointRadius: 1,
     pointHitRadius: 10,
-    data : {{ values }},
+    data : getvalue,
     spanGaps: false
 }]
 };
@@ -36,6 +42,6 @@ var ctx = document.getElementById("myChart").getContext("2d");
  
 // create the chart using the chart canvas
 var myChart = new Chart(ctx, {
-type: 'line',
+type: 'bar',
 data: chartData,
 });
