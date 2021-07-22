@@ -1,35 +1,36 @@
 from flask import Flask,render_template,request,redirect,url_for,session,flash,json
 from flask_restful import Api,Resource,abort,reqparse
 from flask_sqlalchemy import SQLAlchemy,Model
+from flask_socketio import SocketIO, send
 from datetime import timedelta
 import pymssql
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(days = 5)
 
-# database
-# db = SQLAlchemy(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql://scott:tiger@localhost:'
-
-# dialect+driver://username:password@host:port/database
-# engine = db.create_engine('mssql+pymssql://client1:admin@localhost:5000/test')
-
+# databasetype+driver://user:password@host:port/db_name/
+app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://client1:admin@127.0.0.1/test"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 api = Api(app)
+sockketio = SocketIO(app)
 
 
-# m = MetaData()
-# t = Table('t', m,
-#         Column('id', Integer, primary_key=True),
-#         Column('x', Integer))
+class Student(db.Model):
+    # __tablename__ = 'test_table'
+   _id = db.Column("id",db.Integer() , primary_key = True)
+   fname = db.Column("fname",db.String(10))
+   lname = db.Column("lname",db.String(10))
+   age = db.Column("age",db.Integer())
+   def __init__(self,fname,lname,age):
+        self.fname = fname
+        self.lname = lname
+        self.age = age
 
-# class CityModel(db.Model):
-#     city = db.Column(db.In)
+#    def __repr__(self):
+#         return "<User {}>".format(self.fname)
 
-# city_add_args = reqparse.RequestParser()
-# city_add_args.add_argument("fname",type=str,help="wrong type. Insert string")
-# city_add_args.add_argument("lname",type=str,help="wrong type. Insert string")
-# city_add_args.add_argument("age",type=int,help="wrong type. Insert int")
-
+        
 conn = pymssql.connect('127.0.0.1', 'client1', 'admin', "test")
 cursor = conn.cursor(as_dict=True)
 
@@ -93,18 +94,28 @@ def login():
         session["getuser"] = getuser
         session["getpass"] = getpass
         print(getuser,getpass)
-        if (getpass == "1234"):
-            flash("Login Success !!")
-            return render_template("user.html",user = getuser)
+
+        founduser =  Student.query.filter_by(fname = getuser).first()
+        if founduser:
+            session["age"] = founduser.age
+            print(founduser.age)
+
         else:
-            return render_template("login.html")
+            student = Student(getuser,"-",0)
+            db.session.add(student)
+            db.session.commit()
+
+        flash("Login Success !!")
+        return render_template("user.html",user = getuser)
+        # else:
+        #     return render_template("login.html")
     else:
         if "getuser" in session:
             getuser = session["getuser"]
             flash("Login Already !!")
             return render_template("user.html",user = getuser)
-        else:
-            return render_template("login.html")
+        # else:
+        return render_template("login.html")
 
 
 @app.route("/user")
@@ -121,6 +132,7 @@ def user():
 def logout():
     session.pop("getuser",None)
     session.pop("getpass",None)
+    session.pop("age",None)
     return redirect(url_for("login"))
 
 
@@ -185,5 +197,12 @@ def chart():
     return render_template("chart.html",values=values, labels=labels, legend=legend )
 
 
+@sockketio.on('message')
+def handleMessage(msg):
+    print('Message :' + msg)
+    send(msg,broadcast = True)
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    db.create_all()
+    # app.run(debug = True)
+    sockketio.run(app)
