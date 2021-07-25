@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://client1:admin@127.0.0.1
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 api = Api(app)
-sockketio = SocketIO(app)
+socketio = SocketIO(app)
 
 
 class Student(db.Model):
@@ -45,15 +45,15 @@ def notfoundcity(city):
         abort(404,message = "No data weather")
 
 class WeatherCity(Resource):
-    def get(self,city):
-       notfoundcity(city)
-       return myCity[city]
+    def get(self):
+    #    notfoundcity(city)
+       return myCity
            
-    def post(self,city):
-        return {"data","Create Resource " + city}
+    def post(self):
+        return {"data","Create Resource "}
 
-api.add_resource(WeatherCity,"/weather/<string:city>")
-
+# api.add_resource(WeatherCity,"/weather/<string:city>")
+api.add_resource(WeatherCity,"/weather")
 
 def getdb():
     # conn = pymssql.connect('127.0.0.1', 'client1', 'admin', "test")
@@ -68,6 +68,12 @@ def getdb():
     # conn.close()
 
     return row
+
+class Student(Resource):
+    def get(self):
+        return getdb()
+
+api.add_resource(Student,"/student")
 
 def inserttodb(fname,lname,age):
     sql = "insert into xx(fname,lname,age) values(%s,%s,%s)"
@@ -127,15 +133,12 @@ def user():
     else:
         redirect(url_for("login"))
 
-
 @app.route("/logout")
 def logout():
     session.pop("getuser",None)
     session.pop("getpass",None)
     session.pop("age",None)
     return redirect(url_for("login"))
-
-
 
 @app.route("/raw")
 def rawdata():
@@ -145,8 +148,6 @@ def rawdata():
     # print(db1[0])
     # print(db1)
     return render_template('rawdata.html',datas = db1)
-
-
 
 @app.route("/about")
 def about():
@@ -196,13 +197,33 @@ def chart():
     labels = json.dumps( [i["fname"]  for i in getdb() ] )
     return render_template("chart.html",values=values, labels=labels, legend=legend )
 
+@app.route("/physic",methods=["GET"])
+def physic():
+    return render_template("physic.html")
 
-@sockketio.on('message')
+
+@socketio.on('message')
 def handleMessage(msg):
     print('Message :' + msg)
     send(msg,broadcast = True)
 
+@socketio.on('connect')
+def test_connect():
+    print('Connection Success')
+
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print('Disconnection')
+
+
+@socketio.on('my_event')
+def handle_myevent(json):
+    print('recived message ' + str(json))
+    socketio.emit('my_response',json)
+
+
 if __name__ == "__main__":
     db.create_all()
     # app.run(debug = True)
-    sockketio.run(app)
+    socketio.run(app,debug = True)

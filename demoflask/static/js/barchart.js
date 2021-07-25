@@ -6,9 +6,9 @@
 var getlabel = JSON.parse(document.getElementById("myChart").dataset.getlabel);
 var getvalue = JSON.parse(document.getElementById("myChart").dataset.getvalue);
 
-console.log(getlabel , getvalue)
+// console.log(getlabel , getvalue)
 
-Chart.defaults.global.responsive = false;
+// Chart.defaults.global.responsive = false;
  
 // define the chart data
 var chartData = {

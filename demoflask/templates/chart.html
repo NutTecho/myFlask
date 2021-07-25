@@ -4,35 +4,54 @@
       
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
     
-    <div class="row">
-        <div class="col">
-          <h1>Simple Bar Chart</h1>
-          <p id="caption">The chart is displaying a simple line chart.</p>
-          <canvas id="myChart" width="500" height="400" 
-              data-getvalue="{{ values }}"
-              data-getlabel="{{ labels }}"
-              ></canvas>
-
+    <div class="row py-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Simple Bar Chart</h1>
+                    <p id="caption">The chart is displaying a simple line chart.</p>  
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart" width="auto" height="400" 
+                        data-getvalue="{{ values }}"
+                        data-getlabel="{{ labels }}"
+                        ></canvas>
+                </div>
+            </div>
         </div>
 
-        <div class="col">
-          <h1>Simple Line Chart</h1>
-          <p id="caption">The chart is displaying a simple line chart.</p>
-          <canvas id="myChart1" width="500" height="400" 
-              data-getvalue="{{ values }}"
-              data-getlabel="{{ labels }}"
-              ></canvas>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                   <h1>Simple Line Chart</h1> 
+                    <p id="caption">The chart is displaying a simple line chart.</p>
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart1" width="auto" height="400" 
+                    data-getvalue="{{ values }}"
+                    data-getlabel="{{ labels }}"
+                    ></canvas>
+                </div>
+            </div>
+         </div>  
 
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Simple Line Chart</h1> 
+                    <p id="caption">The chart is displaying a simple line chart.</p>
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart2" width="auto" height="400" 
+                    ></canvas>
+                </div>
+            </div>
         </div>
     </div>
-  
-    
-
-   
-   
 
     <script src="{{url_for('static',filename='js/barchart.js')}}"></script>
     <script src="{{url_for('static',filename='js/linechart.js')}}"></script>
+    <script src="{{url_for('static',filename='js/randomchart.js')}}"></script>
     
 
 
