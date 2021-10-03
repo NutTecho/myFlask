@@ -289,5 +289,5 @@ def handle_myevent(json):
 
 if __name__ == "__main__":
     # db.create_all()
-    app.run(debug = True)
+    app.run(debug = False)
     # socketio.run(app,debug = True)
