@@ -12,6 +12,7 @@ from datetime import timedelta
 # from sqlalchemy.orm import query
 import sqlite3
 
+
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(days = 5)
