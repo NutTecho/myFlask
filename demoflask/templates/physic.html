@@ -3,7 +3,9 @@
 {% block content %}
 
         <div class="container">
-            <canvas id="myCanvas" width="600" height="800" style="background: 0% 0%;"></canvas>
+            
+            <canvas id="myCanvas" width="600" height="800" style="background: 0% 0%;">
+           </canvas>
         </div>
 
 
@@ -12,6 +14,11 @@
             
             var myCanvas = document.getElementById("myCanvas")
             // myCanvas.addEventListener('click',mousepress(e))
+            // var context = myCanvas.getContext("2d");
+            // context.fillStyle = "white";
+            // context.font = "bold 18px Arial";
+            // context.fillText("Text", (myCanvas.width / 2) - 17, (myCanvas.height / 2) + 8);
+
             // module aliases
             var Engine = Matter.Engine,
                 Render = Matter.Render,
@@ -93,7 +100,16 @@
             Events.on(engine,'afterUpdate',function(e){
                 if(firing && Math.abs(ball.position.x-300) < 20 && Math.abs(ball.position.y-300) <20 )
                 {
-                    ball = Bodies.circle(300,300,20);
+                    ball = Bodies.circle(300,300,20,{
+                        render:{
+                            text:{
+                                content:"hello",
+                                color:"white",
+                                size:16,
+                                family:"Papyrus"
+                            }
+                        }
+                    });
                     World.add(world,ball);
                     sling.bodyB = ball;
                     firing = false;

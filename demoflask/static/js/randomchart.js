@@ -76,6 +76,24 @@ async function getstudent(){
     myChart.update();
 }
 
+
+fetch('https://reqres.in/api/users/5')
+.then((response) =>{
+    return response.json();
+})
+.then((json) =>{
+    const user = json.data;
+    const x1 = user.first_name + ' ' + user.last_name;
+    const images = user.avatar;
+    console.log(x1);
+})
+.catch((error) => {
+    console.log(error.message);
+});
+
+
+
+
 function randomdata()
 {
     var today = new Date();

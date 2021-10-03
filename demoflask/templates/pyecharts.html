@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Proudly presented by ECharts</title>
+    <!-- <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script> -->
+     <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+     <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+    <!-- {% for jsfile_name in script_list %}
+     
+        <script src="{{url_for('static',filename='jsechart/{{jsfile_name }}')}}"></script>
+    {% endfor %} -->
+</head>
+
+  <body>
+  <!-- {{ myechart|safe }} -->
+    <!-- <div id="{{ chart_id }}" style="width:{{ my_width }};height:{{ my_height }}px;"></div>
+      <script type="text/javascript">
+          window.onload = function() {
+              setTimeout(function() {
+                  var myChart_{{ chart_id }} = echarts.init(document.getElementById('{{ chart_id }}'), null, {renderer: '{{ renderer}}'});
+                  {{ custom_function }}
+                  var option_{{ chart_id }} = {{ options | safe }};
+                  myChart_{{ chart_id }}.setOption(option_{{ chart_id }});
+                  window.onresize = function() {
+                      myChart_{{ chart_id }}.resize();
+                  };
+              }, 1000);
+          };
+      </script> -->
+
+      <div id="bar" style="width:1000px; height:600px;"></div>
+      <script>
+          var chart = echarts.init(document.getElementById('bar'), 'white', {renderer: 'canvas'});
+  
+          $(
+              function () {
+                  fetchData(chart);
+                  setInterval(fetchData, 2000);
+              }
+          );
+  
+          function fetchData() {
+              $.ajax({
+                  type: "GET",
+                  url: "http://192.168.10.91:5000/demo",
+                  dataType: 'json',
+                  success: function (result) {
+                      chart.setOption(result);
+                  }
+              });
+          }
+      </script>
+
+
+  </body>
+</html>
