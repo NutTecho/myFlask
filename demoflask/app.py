@@ -157,7 +157,7 @@ def updatetodb(id,fname,lname,age):
     conn.commit()
    
 
-# @app.route("/")
+@app.route("/")
 @app.route("/login", methods = ["POST","GET"])
 def login():
     if request.method == "POST":
