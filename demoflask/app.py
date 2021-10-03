@@ -52,7 +52,7 @@ socketio = SocketIO(app)
 # conn = pymssql.connect('127.0.0.1', 'client1', 'admin', "test")
 # cursor = conn.cursor(as_dict=True)
 
-conn = sqlite3.connect(r".\demoflask\test.db",check_same_thread=False)
+conn = sqlite3.connect(r"demoflask\test.db",check_same_thread=False)
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
