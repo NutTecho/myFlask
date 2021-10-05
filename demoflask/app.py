@@ -23,8 +23,7 @@ app.register_blueprint(second,url_prefix="/admin")
 # app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://client1:admin@127.0.0.1/test"
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'hello'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
-# "postgresql+psycopg2://afhbzpmfemumhn:4bac8ca2b04d83fb2338a7bf49c4551d308e85538d47d73aa8fad7983742691e@ec2-3-209-65-193.compute-1.amazonaws.com:5432/d2adn83ab62j69"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql+psycopg2://afhbzpmfemumhn:4bac8ca2b04d83fb2338a7bf49c4551d308e85538d47d73aa8fad7983742691e@ec2-3-209-65-193.compute-1.amazonaws.com:5432/d2adn83ab62j69"
 # DATABASE_URL = os.environ['DATABASE_URL']
 # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
