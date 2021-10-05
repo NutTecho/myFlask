@@ -1,6 +1,6 @@
 from flask import Flask,render_template,request,redirect,url_for,session,flash,json
 from flask_restful import Api,Resource,abort,reqparse
-# from flask_sqlalchemy import SQLAlchemy,Model
+from flask_sqlalchemy import SQLAlchemy,Model
 from flask_socketio import SocketIO, send
 # from pyecharts.charts import Bar
 # from pyecharts import options as opts
@@ -9,41 +9,40 @@ from jinja2 import Markup
 from blue2 import second
 # from pyecharts.constants import DEFAULT_HOST
 from datetime import timedelta
-# from sqlalchemy.orm import query
+# from sqlalchemy.orm import create_engine, Session
 import sqlite3
-
+import os
 
 app = Flask(__name__)
-app.secret_key = "hello"
+# app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(days = 5)
 app.register_blueprint(second,url_prefix="/admin")
 
 # databasetype+driver://user:password@host:port/db_name/
 # app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://client1:admin@127.0.0.1/test"
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'hello'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.sqlite3'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
+# DATABASE_URL = os.environ['DATABASE_URL']
+# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 api = Api(app)
 socketio = SocketIO(app)
 
-# pymc3e = pymcprotocol.Type3E()
-# pymc3e.setaccessopt(commtype="binary")
-# pymc3e.commtype("192.168.10.4",1026)
-
-
-# class Student(db.Model):
-#     # __tablename__ = 'test_table'
-#     _id = db.Column("id",db.Integer() , primary_key = True)
-#     fname = db.Column("fname",db.String(10))
-#     lname = db.Column("lname",db.String(10))
-#     age = db.Column("age",db.Integer())
+class Student(db.Model):
+    # __tablename__ = 'test_table'
+    _id = db.Column("id",db.Integer() , primary_key = True)
+    fname = db.Column("fname",db.String(10))
+    lname = db.Column("lname",db.String(10))
+    age = db.Column("age",db.Integer())
     
-#     def __init__(self,fname,lname,age):
-#             self.fname = fname
-#             self.lname = lname
-#             self.age = age
+    def __init__(self,fname,lname,age):
+            self.fname = fname
+            self.lname = lname
+            self.age = age
 
 #    def __repr__(self):
 #         return "<User {}>".format(self.fname)
@@ -51,10 +50,6 @@ socketio = SocketIO(app)
         
 # conn = pymssql.connect('127.0.0.1', 'client1', 'admin', "test")
 # cursor = conn.cursor(as_dict=True)
-
-conn = sqlite3.connect(r"demoflask\test.db",check_same_thread=False)
-conn.row_factory = sqlite3.Row
-cursor = conn.cursor()
 
 
 myCity = {
@@ -118,11 +113,13 @@ def getdb():
         # getdata[row['id']] = row['fname']
         # getdata['fname'] = row['fname']
     # conn.close()
-    cursor.execute('select * from student')
-    row = cursor.fetchall()
-    conn.commit()
-    print(row)
-    return row
+    # cursor.execute('select * from student')
+    # row = cursor.fetchall()
+    # conn.commit()
+    # print(row)
+    student = Student.query.all()
+
+    return student
 
 class Student(Resource):
     def get(self):
@@ -134,18 +131,25 @@ def inserttodb(fname,lname,age):
     # sql = "insert into xx(fname,lname,age) values(%s,%s,%s)"
     # cursor.execute(sql,(fname,lname,age))
     # conn.commit()
-    sql = "insert into student(fname,lname,age) values(?,?,?)"
-    cursor.execute(sql,(fname,lname,age))
-    conn.commit()
+
+    # sql = "insert into student(fname,lname,age) values(?,?,?)"
+    # cursor.execute(sql,(fname,lname,age))
+    # conn.commit()
+    student = Student(fname,lname,age)
+    db.session.add(student)
+    db.session.commit()
 
 def deletetodb(id_data):
     # sql = "delete from xx where id = %s"
     # cursor.execute(sql,id_data)
     # conn.commit()
     
-    sql = "delete from student where id = ?"
-    cursor.execute(sql,id_data)
-    conn.commit()
+    # sql = "delete from student where id = ?"
+    # cursor.execute(sql,id_data)
+    # conn.commit()
+    student = Student.query.filter_by(id=id_data).first()
+    db.session.delete(student)
+    db.session.commit()
     
 
 def updatetodb(id,fname,lname,age):
@@ -153,9 +157,14 @@ def updatetodb(id,fname,lname,age):
     # cursor.execute(sql,(fname,lname,age,id))
     # conn.commit()
 
-    sql = "update student set fname = ?,lname = ?,age = ? where id = ?"
-    cursor.execute(sql,(fname,lname,age,id))
-    conn.commit()
+    # sql = "update student set fname = ?,lname = ?,age = ? where id = ?"
+    # cursor.execute(sql,(fname,lname,age,id))
+    # conn.commit()
+    student = Student.query.filter_by(id=id).first()
+    student.fname = fname
+    student.lname = lname
+    student.age = age
+    db.session.commit()
    
 
 @app.route("/")
@@ -289,6 +298,6 @@ def handle_myevent(json):
 
 
 if __name__ == "__main__":
-    # db.create_all()
-    app.run(debug = True)
+    db.create_all()
+    app.run(debug = False)
     # socketio.run(app,debug = True)
