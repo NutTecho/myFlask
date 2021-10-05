@@ -2,7 +2,6 @@ from flask import Flask,render_template,request,redirect,url_for,session,flash,j
 from flask_restful import Api,Resource,abort,reqparse
 from flask_sqlalchemy import SQLAlchemy,Model,BaseQuery,inspect
 from flask_socketio import SocketIO, send
-from flask_migrate import Migrate
 # from pyecharts.charts import Bar
 # from pyecharts import options as opts
 # from pyecharts.globals import ThemeType
