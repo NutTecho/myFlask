@@ -117,7 +117,7 @@ def getdb():
     # row = cursor.fetchall()
     # conn.commit()
     # print(row)
-    student = Student.query.all()
+    student = db.session.query(Student).all()
 
     return student
 
