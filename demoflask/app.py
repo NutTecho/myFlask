@@ -33,7 +33,7 @@ api = Api(app)
 socketio = SocketIO(app)
 
 class Student(db.Model):
-    # __tablename__ = 'test_table'
+    __tablename__ = 'student'
     _id = db.Column("id",db.Integer() , primary_key = True)
     fname = db.Column("fname",db.String(10))
     lname = db.Column("lname",db.String(10))
