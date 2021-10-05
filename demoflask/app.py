@@ -10,7 +10,7 @@ from blue2 import second
 # from pyecharts.constants import DEFAULT_HOST
 from datetime import timedelta
 # from sqlalchemy.orm import create_engine, Session
-import sqlite3
+import psycopg2
 import os
 
 app = Flask(__name__)
