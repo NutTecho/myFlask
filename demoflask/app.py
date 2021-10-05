@@ -1,7 +1,8 @@
 from flask import Flask,render_template,request,redirect,url_for,session,flash,json
 from flask_restful import Api,Resource,abort,reqparse
-from flask_sqlalchemy import SQLAlchemy,Model
+from flask_sqlalchemy import SQLAlchemy,Model,BaseQuery,inspect
 from flask_socketio import SocketIO, send
+from flask_migrate import Migrate
 # from pyecharts.charts import Bar
 # from pyecharts import options as opts
 # from pyecharts.globals import ThemeType
@@ -10,8 +11,9 @@ from blue2 import second
 # from pyecharts.constants import DEFAULT_HOST
 from datetime import timedelta
 # from sqlalchemy.orm import create_engine, Session
-import psycopg2
 import os
+import psycopg2
+
 
 app = Flask(__name__)
 # app.secret_key = "hello"
@@ -23,26 +25,16 @@ app.register_blueprint(second,url_prefix="/admin")
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'hello'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
-
+# "postgresql+psycopg2://afhbzpmfemumhn:4bac8ca2b04d83fb2338a7bf49c4551d308e85538d47d73aa8fad7983742691e@ec2-3-209-65-193.compute-1.amazonaws.com:5432/d2adn83ab62j69"
 # DATABASE_URL = os.environ['DATABASE_URL']
 # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+# migrate = Migrate(app,db)
+
 api = Api(app)
 socketio = SocketIO(app)
-
-class Student(db.Model):
-    __tablename__ = 'student'
-    _id = db.Column("id",db.Integer() , primary_key = True)
-    fname = db.Column("fname",db.String(10))
-    lname = db.Column("lname",db.String(10))
-    age = db.Column("age",db.Integer())
-    
-    def __init__(self,fname,lname,age):
-            self.fname = fname
-            self.lname = lname
-            self.age = age
 
 #    def __repr__(self):
 #         return "<User {}>".format(self.fname)
@@ -86,6 +78,17 @@ myCity = {
     # # my_height = 600,
     # script_list = bar1.get_js_dependencies(),)
 
+class Student(db.Model):
+    __tablename__ = 'student'
+    _id = db.Column("id",db.Integer() , primary_key = True)
+    fname = db.Column("fname",db.String(10))
+    lname = db.Column("lname",db.String(10))
+    age = db.Column("age",db.Integer())
+    
+    def __init__(self,fname,lname,age):
+            self.fname = fname
+            self.lname = lname
+            self.age = age
 
 def notfoundcity(city):
     if city not in myCity:
@@ -102,6 +105,9 @@ class WeatherCity(Resource):
 # api.add_resource(WeatherCity,"/weather/<string:city>")
 api.add_resource(WeatherCity,"/weather")
 
+def object_as_dict(obj):
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs}
 def getdb():
     # conn = pymssql.connect('127.0.0.1', 'client1', 'admin', "test")
     # cursor = conn.cursor(as_dict=True)
@@ -117,15 +123,17 @@ def getdb():
     # row = cursor.fetchall()
     # conn.commit()
     # print(row)
-    student = db.session.query(Student).all()
+    listquery = []
+    student = Student.query.all()
+    for row in student:
+        listquery.append(object_as_dict(row))
+    return listquery
 
-    return student
-
-class Student(Resource):
+class GetStudent(Resource):
     def get(self):
         return getdb()
 
-api.add_resource(Student,"/student")
+api.add_resource(GetStudent,"/student")
 
 def inserttodb(fname,lname,age):
     # sql = "insert into xx(fname,lname,age) values(%s,%s,%s)"
@@ -135,6 +143,7 @@ def inserttodb(fname,lname,age):
     # sql = "insert into student(fname,lname,age) values(?,?,?)"
     # cursor.execute(sql,(fname,lname,age))
     # conn.commit()
+
     student = Student(fname,lname,age)
     db.session.add(student)
     db.session.commit()
@@ -147,12 +156,12 @@ def deletetodb(id_data):
     # sql = "delete from student where id = ?"
     # cursor.execute(sql,id_data)
     # conn.commit()
-    student = Student.query.filter_by(id=id_data).first()
+    student = Student.query.get(id_data)
     db.session.delete(student)
     db.session.commit()
     
 
-def updatetodb(id,fname,lname,age):
+def updatetodb(nid,fname,lname,age):
     # sql = "update xx set fname = %s,lname = %s,age = %s where id = %s"
     # cursor.execute(sql,(fname,lname,age,id))
     # conn.commit()
@@ -160,7 +169,7 @@ def updatetodb(id,fname,lname,age):
     # sql = "update student set fname = ?,lname = ?,age = ? where id = ?"
     # cursor.execute(sql,(fname,lname,age,id))
     # conn.commit()
-    student = Student.query.filter_by(id=id).first()
+    student = Student.query.get(nid)
     student.fname = fname
     student.lname = lname
     student.age = age
@@ -268,8 +277,8 @@ def chart():
     # labels = [i["fname"]  for i in getdb() ]
     # values = [i["age"]  for i in getdb() ]
     # print(labels)
-    values = json.dumps( [i["age"]  for i in getdb() ] )
-    labels = json.dumps( [i["fname"]  for i in getdb() ] )
+    values = json.dumps([i["age"] for i in getdb() ] )
+    labels = json.dumps([i["fname"]  for i in getdb() ] )
     return render_template("chart.html",values=values, labels=labels, legend=legend )
 
 @app.route("/physic",methods=["GET"])
@@ -299,5 +308,5 @@ def handle_myevent(json):
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug = False)
+    app.run(debug = True)
     # socketio.run(app,debug = True)

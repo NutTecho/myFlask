@@ -6,7 +6,7 @@
             <table class="table table-bordered">
             <thead>
                 <tr>
-                <th>id</th>
+                <th>Id</th>
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Age</th>
@@ -16,16 +16,16 @@
             <tbody>
                 {% for row in datas %}
                 <tr> 
-                    <td>{{row.id}}</td>
+                    <td>{{row._id}}</td>
                     <td>{{row.fname}}</td>
                     <td>{{row.lname}}</td>
                     <td>{{row.age}}</td>
                     <td>
-                        <a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.id}}">Edit</a>
-                        <a href="/delete/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('want to delete now?')">Delete</a>
+                        <a href="" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row._id}}">Edit</a>
+                        <a href="/delete/{{row._id}}" class="btn btn-danger btn-xs" onclick="return confirm('want to delete now?')">Delete</a>
                     </td>
                 </tr>
-                <div id="modaledit{{row.id}}" class="modal fade" role="dialog">
+                <div id="modaledit{{row._id}}" class="modal fade" role="dialog">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -36,7 +36,7 @@
                             <form action="/update" method="POST">
                                 <div class="form-group">
                                     <label>Firstname</label>
-                                    <input type="hidden" name="idx" value="{{row.id}}">
+                                    <input type="hidden" name="idx" value="{{row._id}}">
                                     <input type="text" class="form-control" name="fname" value="{{row.fname}}">
                                 </div>
                                 <div class="form-group">
