@@ -62,7 +62,7 @@ async function studentChart(){
 }
 
 async function getstudent(){
-    const apiUrl = "http://localhost:5000/student"
+    const apiUrl = "https://demotest-flask-heroku.herokuapp.com/student"
     const response = await fetch(apiUrl);
     const alldata = await response.json();
 
